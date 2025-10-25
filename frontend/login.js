@@ -144,4 +144,20 @@ document.getElementById('clave').addEventListener('keypress', (event) => {
     }
 });
 
+// ===== FUNCIÓN PARA MOSTRAR/OCULTAR CONTRASEÑA =====
+function togglePassword() {
+    const passwordInput = document.getElementById('clave');
+    const toggleButton = document.getElementById('toggle-password');
+    
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleButton.textContent = '🙈';
+        toggleButton.setAttribute('aria-label', 'Ocultar contraseña');
+    } else {
+        passwordInput.type = 'password';
+        toggleButton.textContent = '👁️';
+        toggleButton.setAttribute('aria-label', 'Mostrar contraseña');
+    }
+}
+
 console.log('✅ Script de login cargado correctamente');
