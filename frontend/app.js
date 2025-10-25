@@ -25,10 +25,45 @@ axios.interceptors.response.use(
 // ===== INICIALIZACIÓN =====
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 Aplicación iniciada');
+    
+    // Verificar autenticación
+    verificarAutenticacion();
+    
+    // Mostrar información del usuario
+    mostrarInfoUsuario();
+    
     cargarProductos();
     configurarFormulario();
     configurarBuscador();
 });
+
+// ===== VERIFICACIÓN DE AUTENTICACIÓN =====
+function verificarAutenticacion() {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        console.log('❌ No hay sesión activa, redirigiendo a login...');
+        window.location.href = 'login.html';
+        return;
+    }
+    console.log('✅ Usuario autenticado');
+}
+
+// ===== FUNCIÓN DE CERRAR SESIÓN =====
+function cerrarSesion() {
+    console.log('🚪 Cerrando sesión...');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userName');
+    window.location.href = 'login.html';
+}
+
+// ===== MOSTRAR INFORMACIÓN DEL USUARIO =====
+function mostrarInfoUsuario() {
+    const userName = localStorage.getItem('userName');
+    if (userName) {
+        const userInfo = document.getElementById('user-info');
+        userInfo.innerHTML = `<p style="margin: 0; font-size: 0.9rem; opacity: 0.9;">👤 Bienvenido, <strong>${userName}</strong></p>`;
+    }
+}
 
 // Configurar el formulario
 function configurarFormulario() {

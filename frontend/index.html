@@ -10,8 +10,18 @@
 <body>
     <div class="container">
         <header>
-            <h1>🛒 Sistema de Gestión de Productos</h1>
-            <p class="subtitle">CRUD con Spring Boot y Axios</p>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>🛒 Sistema de Gestión de Productos</h1>
+                    <p class="subtitle">CRUD con Spring Boot y Axios</p>
+                </div>
+                <div style="text-align: right;">
+                    <div id="user-info" style="margin-bottom: 10px;"></div>
+                    <button class="btn btn-secondary" onclick="cerrarSesion()" style="padding: 8px 20px; font-size: 0.9rem;">
+                        🚪 Cerrar Sesión
+                    </button>
+                </div>
+            </div>
         </header>
 
         <!-- Formulario para Crear/Editar Producto -->
