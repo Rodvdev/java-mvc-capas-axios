@@ -1,7 +1,7 @@
 package com.example.app.producto;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,11 +10,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/productos")
-@RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class ProductoController {
 
-    private final ProductoService productoService;
+    @Autowired
+    private ProductoService productoService;
 
     // GET - Obtener todos los productos
     @GetMapping
@@ -48,9 +48,9 @@ public class ProductoController {
 
     // DELETE - Eliminar producto
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
+    public ResponseEntity<String> eliminar(@PathVariable Long id) {
         productoService.eliminar(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok("Producto con id: " + id + " eliminado exitosamente");
     }
 
     // GET - Buscar por nombre
