@@ -5,11 +5,25 @@ meta {
 }
 
 put {
-  url: 
-  body: none
+  url: http://localhost:8080/api/empleados/22
+  body: json
   auth: inherit
+}
+
+body:json {
+    {
+      "nombre": "Rodrig",
+      "apellido": "Vásquez de",
+      "email": "rodrigovdev01@gmail.com",
+      "telefono": "949833976",
+      "fechaContratacion": "2025-10-25",
+      "salario": 5000,
+      "cargo": "Desarrollador Senior",
+      "departamentoId": 2
+    }
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

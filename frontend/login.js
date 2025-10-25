@@ -87,7 +87,7 @@ async function iniciarSesion(event) {
             
             // Redirigir después de 1 segundo
             setTimeout(() => {
-                window.location.href = 'index.html';
+                window.location.href = 'admin.html';
             }, 1000);
         } else {
             // Login fallido

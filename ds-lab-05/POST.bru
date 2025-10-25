@@ -5,11 +5,26 @@ meta {
 }
 
 post {
-  url: 
-  body: none
+  url: http://localhost:8080/api/empleados
+  body: json
   auth: inherit
+}
+
+body:json {
+  {
+      "id": 20,
+      "nombre": "Prueba",
+      "apellido": "Eliminar",
+      "email": "prueba@gmail.com",
+      "telefono": "949833123",
+      "fechaContratacion": "2025-10-09",
+      "salario": 2000,
+      "cargo": "Desarrollador Senior",
+      "departamentoId": 2
+    }
 }
 
 settings {
   encodeUrl: true
+  timeout: 0
 }

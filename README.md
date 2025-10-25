@@ -1,300 +1,302 @@
-# 🧩 Laboratorio N°05 – "Despliegue"
-### Curso: Diseño de Software  
-### Universidad de Ingeniería y Tecnología (UTEC)
+# 🚀 Sistema de Gestión de Empleados
+
+Sistema web completo desarrollado con **Spring Boot** y **PostgreSQL** que implementa:
+- ✅ **Sistema de login** con autenticación
+- ✅ **CRUD completo de empleados**
+- ✅ **Arquitectura en capas** (MVC)
+- ✅ **Comunicación con Axios**
 
 ---
 
-## 📖 Descripción del Proyecto
-Este proyecto consiste en una **aplicación web desarrollada con Spring Boot y PostgreSQL** que implementa:
+## 📋 Requisitos Previos
 
-1. Un **sistema de login** con autenticación de usuarios.
-2. Un **CRUD completo de empleados** (Crear, Leer, Actualizar y Eliminar registros).
-3. Un **CRUD completo de productos** con gestión de inventario.
-4. Una **arquitectura en capas**, siguiendo el modelo MVC.
-5. Comunicación entre frontend y backend mediante **Axios**.
+Antes de instalar y ejecutar el proyecto, asegúrate de tener:
 
-El objetivo es demostrar el conocimiento en **autenticación y operaciones CRUD** utilizando una base de datos relacional y buenas prácticas de desarrollo.
-
----
-
-## ⚙️ Tecnologías Utilizadas
-- **Java 17 / Spring Boot 3.2.0**
-- **PostgreSQL 15**
-- **Axios (para consumo de API)**
-- **HTML / CSS / JavaScript**
-- **Spring Data JPA / Hibernate**
-- **Lombok (para reducir código boilerplate)**
-- **Bruno API Client** (para pruebas de endpoints)
-- **Maven** (gestión de dependencias)
-
----
-
-## 🧱 Arquitectura del Proyecto
-La aplicación sigue la **arquitectura en capas**, compuesta por:
-
-```
-src/
-├─ main/
-│  ├─ java/com/example/app/
-│  │  ├─ common/
-│  │  │  ├─ config/          → Configuración (CORS, etc.)
-│  │  │  ├─ controller/      → Controladores comunes
-│  │  │  └─ exception/       → Manejo de excepciones globales
-│  │  ├─ empleado/           → Módulo de empleados
-│  │  │  ├─ Empleado.java    → Entidad
-│  │  │  ├─ EmpleadoController.java → Controlador REST
-│  │  │  ├─ EmpleadoDTO.java → Data Transfer Object
-│  │  │  ├─ EmpleadoRepository.java → Repositorio JPA
-│  │  │  └─ EmpleadoService.java → Lógica de negocio
-│  │  ├─ producto/           → Módulo de productos
-│  │  │  ├─ Producto.java    → Entidad
-│  │  │  ├─ ProductoController.java → Controlador REST
-│  │  │  ├─ ProductoDTO.java → Data Transfer Object
-│  │  │  ├─ ProductoRepository.java → Repositorio JPA
-│  │  │  └─ ProductoService.java → Lógica de negocio
-│  │  ├─ usuario/            → Módulo de autenticación
-│  │  │  ├─ Usuario.java     → Entidad
-│  │  │  ├─ AuthController.java → Controlador de autenticación
-│  │  │  ├─ AuthService.java → Servicio de autenticación
-│  │  │  ├─ LoginDTO.java    → DTO para login
-│  │  │  ├─ AuthResponseDTO.java → DTO para respuesta
-│  │  │  └─ UsuarioRepository.java → Repositorio JPA
-│  │  └─ JavaMvcCapasAxiosApplication.java → Clase principal
-│  ├─ resources/
-│  │  └─ application.properties → Configuración de la aplicación
-├─ test/
-│  └─ java/com/example/app/  → Pruebas unitarias
-└─ ds-lab-05/                → Pruebas de API con Bruno
-    ├─ bruno.json
-    ├─ GET.bru
-    ├─ POST.bru
-    ├─ PUT.bru
-    └─ DELETE.bru
-```
-
----
-
-## 🧰 Requisitos Previos
-Antes de ejecutar el proyecto, asegúrate de tener instalado:
-
-- [Java JDK 17+](https://www.oracle.com/java/technologies/javase-jdk17-downloads.html)
-- [PostgreSQL 15+](https://www.postgresql.org/download/)
-- [Maven 3.6+](https://maven.apache.org/)
-- [Visual Studio Code / IntelliJ IDEA / Spring Tool Suite](https://spring.io/tools)
-- [Bruno API Client](https://www.usebruno.com/) (opcional, para pruebas)
+- ✅ **Java JDK 17+** [(Descargar)](https://www.oracle.com/java/technologies/javase-jdk17-downloads.html)
+- ✅ **PostgreSQL 15+** [(Descargar)](https://www.postgresql.org/download/)
+- ✅ **Maven 3.6+** (incluido en el proyecto)
+- ✅ **Navegador web moderno** (Chrome, Firefox, Edge, etc.)
 
 ---
 
 ## 🗄️ Configuración de la Base de Datos
 
-### 1. Crear la base de datos:
-```sql
+### 1. Crear la base de datos PostgreSQL
+
+```bash
+# Conectar a PostgreSQL
+psql -U postgres
+
+# Crear la base de datos
 CREATE DATABASE lab05_db;
+
+# Salir de psql
+\q
 ```
 
-### 2. Configurar el archivo `application.properties`:
+### 2. Ejecutar el script SQL
+
+```bash
+# Desde la raíz del proyecto
+psql -U postgres -d lab05_db -f Java-mvc-capas-axios/db.sql
+```
+
+Esto creará:
+- ✅ Tabla `departamentos` (4 registros)
+- ✅ Tabla `usuarios` (2 usuarios de prueba)
+- ✅ Tabla `empleados` (20 empleados de ejemplo)
+
+### 3. Verificar la conexión
+
+Edita el archivo `Java-mvc-capas-axios/src/main/resources/application.properties`:
+
 ```properties
-spring.application.name=Java-mvc-capas-axios
-server.port=8080
-
 # Configuración de PostgreSQL
-spring.datasource.url=jdbc:postgresql://localhost:5433/lab05_db
+spring.datasource.url=jdbc:postgresql://localhost:5432/lab05_db
 spring.datasource.username=postgres
-spring.datasource.password=tu_contraseña
-spring.datasource.driver-class-name=org.postgresql.Driver
-
-# Configuración de JPA/Hibernate
-spring.jpa.hibernate.ddl-auto=update
-spring.jpa.show-sql=true
-spring.jpa.properties.hibernate.format_sql=true
-spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+spring.datasource.password=TU_CONTRASEÑA_AQUI
 ```
-
-### 3. (Opcional) Importar el script inicial `db.sql` incluido en la carpeta raíz.
 
 ---
 
 ## 🚀 Ejecución del Proyecto
 
-### 🧩 1. Clonar el repositorio
-```bash
-git clone https://github.com/rodrigo/java-mvc-capas-axios.git
-cd java-mvc-capas-axios
-```
+### Opción 1: Ejecutar con Maven
 
-### ⚙️ 2. Compilar y ejecutar
 ```bash
-# Compilar el proyecto
-mvn clean compile
+# Navegar al directorio del proyecto
+cd Java-mvc-capas-axios
 
-# Ejecutar la aplicación
+# Compilar y ejecutar
+mvn clean install
 mvn spring-boot:run
 ```
 
-### 🌐 3. Acceder a la aplicación
-- **URL Backend**: http://localhost:8080
-- **URL Frontend**: http://localhost:8080 (archivos estáticos)
-- **Usuario de prueba**: admin
-- **Contraseña**: 123456
+### Opción 2: Ejecutar desde tu IDE
+
+1. Abre el proyecto en **IntelliJ IDEA**, **Eclipse** o **VS Code**
+2. Localiza `JavaMvcCapasAxiosApplication.java`
+3. Haz clic derecho → **Run**
+
+### Verificar que esté funcionando
+
+- 🌐 **Backend**: http://localhost:8080
+- 🔐 **Login**: http://localhost:8080/frontend/login.html
+- 👥 **Empleados**: http://localhost:8080/frontend/empleados.html
 
 ---
 
-## 🧑‍💻 Funcionalidades Principales
+## 🔐 Credenciales de Acceso
 
-### 🔐 Sistema de Autenticación
-- Validación de usuario y contraseña desde base de datos
-- Redirección al panel administrativo al iniciar sesión
-- Manejo de errores para credenciales inválidas
-- Endpoint: `POST /api/auth/login`
-
-### 🧑‍💼 CRUD de Empleados
-| Operación | Endpoint | Descripción |
-|-----------|----------|-------------|
-| **Crear** | `POST /api/empleados` | Registrar nuevo empleado mediante formulario |
-| **Leer** | `GET /api/empleados` | Mostrar lista completa de empleados |
-| **Actualizar** | `PUT /api/empleados/{id}` | Editar información de un empleado |
-| **Eliminar** | `DELETE /api/empleados/{id}` | Borrar empleado con confirmación |
-
-### 📦 CRUD de Productos
-| Operación | Endpoint | Descripción |
-|-----------|----------|-------------|
-| **Crear** | `POST /api/productos` | Registrar nuevo producto con inventario |
-| **Leer** | `GET /api/productos` | Mostrar lista completa de productos |
-| **Actualizar** | `PUT /api/productos/{id}` | Editar información de un producto |
-| **Eliminar** | `DELETE /api/productos/{id}` | Borrar producto del inventario |
+| Usuario | Contraseña | Descripción |
+|---------|-----------|-------------|
+| `jorge` | `1234` | Usuario de prueba |
+| `max`   | `1234` | Usuario de prueba |
 
 ---
 
-## 🧪 Pruebas
-
-### Pruebas con Bruno API Client
-El proyecto incluye una carpeta `/ds-lab-05` con pruebas de API usando Bruno:
-
-```bash
-# Importar la colección de Bruno
-# Abrir Bruno y cargar la carpeta ds-lab-05
-```
-
-### Pruebas Unitarias
-```bash
-# Ejecutar todas las pruebas
-mvn test
-
-# Ejecutar pruebas con reporte de cobertura
-mvn test jacoco:report
-```
-
-### Endpoints de Prueba
-- **GET** `/api/empleados` - Listar empleados
-- **POST** `/api/empleados` - Crear empleado
-- **PUT** `/api/empleados/{id}` - Actualizar empleado
-- **DELETE** `/api/empleados/{id}` - Eliminar empleado
-- **POST** `/api/auth/login` - Autenticación
-
----
-
-## 📹 Video de Demostración
-- **Duración**: máximo 5 minutos
-- **Contenido**:
-  1. Login exitoso y fallido
-  2. CRUD completo de empleados (crear, leer, actualizar, eliminar)
-  3. CRUD completo de productos
-  4. Manejo de errores y validaciones
-- **Disponible en**:
-  - [YouTube – enlace público o sin restricción]
-  - o [Google Drive – enlace compartido]
-
----
-
-## 📦 Estructura del Repositorio
+## 📁 Estructura del Proyecto
 
 ```
-📦 java-mvc-capas-axios
- ┣ 📂 Java-mvc-capas-axios/
- │  ┣ 📂 src/main/java/com/example/app/
- │  │  ├─ 📂 common/ (config, controller, exception)
- │  │  ├─ 📂 empleado/ (entidad, controlador, servicio, repositorio)
- │  │  ├─ 📂 producto/ (entidad, controlador, servicio, repositorio)
- │  │  ├─ 📂 usuario/ (entidad, autenticación, servicios)
- │  │  └─ 📄 JavaMvcCapasAxiosApplication.java
- │  ├─ 📂 src/main/resources/
- │  │  └─ 📄 application.properties
- │  ├─ 📂 src/test/ (pruebas unitarias)
- │  ├─ 📄 pom.xml
- │  └─ 📄 db.sql
- ┣ 📂 frontend/ (archivos HTML, CSS, JS)
- ┣ 📂 ds-lab-05/ (pruebas Bruno API)
- ┗ 📄 README.md
+java-mvc-capas-axios/
+├── 📂 frontend/                    # Interfaz web
+│   ├── login.html                  # Página de login
+│   ├── empleados.html              # CRUD de empleados
+│   ├── index.html                  # CRUD de productos
+│   ├── styles.css                  # Estilos CSS
+│   ├── login.js                    # Lógica de autenticación
+│   ├── empleados.js                # Lógica CRUD empleados
+│   └── app.js                      # Lógica CRUD productos
+│
+├── 📂 Java-mvc-capas-axios/        # Backend Spring Boot
+│   ├── 📂 src/main/java/
+│   │   └── com/example/app/
+│   │       ├── 📂 common/          # Configuración y excepciones
+│   │       ├── 📂 empleado/        # Módulo de empleados
+│   │       ├── 📂 producto/        # Módulo de productos
+│   │       ├── 📂 usuario/         # Módulo de autenticación
+│   │       └── JavaMvcCapasAxiosApplication.java
+│   │
+│   ├── 📂 src/main/resources/
+│   │   └── application.properties  # Configuración
+│   │
+│   ├── 📂 src/test/                # Pruebas unitarias
+│   ├── db.sql                      # Script de base de datos
+│   └── pom.xml                     # Dependencias Maven
+│
+├── 📂 .documentation/               # Documentación
+│   └── script.txt                  # Script SQL original
+│
+└── README.md                        # Este archivo
 ```
 
 ---
 
-## 🔧 Configuración Adicional
+## 🏗️ Arquitectura del Proyecto
 
-### Variables de Entorno
-Para mayor seguridad, puedes usar variables de entorno:
+### Backend (Spring Boot)
 
-```bash
-export DB_URL=jdbc:postgresql://localhost:5433/lab05_db
-export DB_USERNAME=postgres
-export DB_PASSWORD=tu_contraseña
+```
+📦 Arquitectura en Capas:
+
+1️⃣ Controller (REST API)
+   └── Recibe peticiones HTTP
+       ├── ProductoController
+       ├── EmpleadoController
+       └── AuthController
+
+2️⃣ Service (Lógica de Negocio)
+   └── Implementa reglas de negocio
+       ├── ProductoService
+       ├── EmpleadoService
+       └── AuthService
+
+3️⃣ Repository (Persistencia)
+   └── Acceso a base de datos
+       ├── ProductoRepository
+       ├── EmpleadoRepository
+       └── UsuarioRepository
+
+4️⃣ Entity/DTO
+   └── Modelos de datos
+       ├── Producto.java
+       ├── Empleado.java
+       └── Usuario.java
 ```
 
-### Perfiles de Spring
-- **Desarrollo**: `application-dev.properties`
-- **Producción**: `application-prod.properties`
+### Frontend (HTML/CSS/JavaScript)
+
+```
+📦 Tecnologías:
+   ├── HTML5
+   ├── CSS3 (Responsive Design)
+   ├── JavaScript ES6+
+   └── Axios (HTTP Client)
+```
+
+---
+
+## 🌐 Endpoints API
+
+### Autenticación
+```
+POST /api/auth/login
+Body: { "usuario": "jorge", "clave": "1234" }
+```
+
+### Empleados
+```
+GET    /api/empleados           # Listar todos
+GET    /api/empleados/{id}      # Obtener por ID
+POST   /api/empleados           # Crear empleado
+PUT    /api/empleados/{id}      # Actualizar empleado
+DELETE /api/empleados/{id}      # Eliminar empleado
+GET    /api/empleados/buscar/nombre?nombre=... # Buscar por nombre
+```
+
+### Productos
+```
+GET    /api/productos           # Listar todos
+GET    /api/productos/{id}      # Obtener por ID
+POST   /api/productos           # Crear producto
+PUT    /api/productos/{id}      # Actualizar producto
+DELETE /api/productos/{id}      # Eliminar producto
+GET    /api/productos/buscar?nombre=... # Buscar por nombre
+```
+
+---
+
+## 🧪 Funcionalidades Implementadas
+
+### ✅ Sistema de Login
+- [x] Validación de credenciales contra base de datos
+- [x] Generación de tokens
+- [x] Redirección automática
+- [x] Manejo de errores
+
+### ✅ CRUD de Empleados
+- [x] Crear empleado
+- [x] Listar empleados
+- [x] Editar empleado
+- [x] Eliminar empleado
+- [x] Buscar por nombre
+- [x] Validaciones frontend y backend
+
+### ✅ CRUD de Productos
+- [x] Crear producto
+- [x] Listar productos
+- [x] Editar producto
+- [x] Eliminar producto
+- [x] Buscar por nombre
+- [x] Gestión de inventario
+
+---
+
+## 🔧 Tecnologías Utilizadas
+
+### Backend
+- **Java 17**
+- **Spring Boot 3.2.0**
+- **Spring Data JPA**
+- **PostgreSQL**
+- **Maven**
+
+### Frontend
+- **HTML5**
+- **CSS3** (Responsive Design)
+- **JavaScript ES6+**
+- **Axios** (HTTP Client)
+
+---
+
+## 📝 Notas Importantes
+
+### Base de Datos
+- El script `db.sql` crea las tablas con datos de ejemplo
+- Si las tablas ya existen, solo insertará los datos
+- Usuarios de prueba: `jorge/1234` y `max/1234`
+
+### Seguridad
+- ⚠️ Contraseñas en texto plano (solo para desarrollo)
+- ⚠️ Tokens simples (implementar JWT en producción)
+- ⚠️ CORS habilitado para todos los orígenes (configurar en producción)
+
+### Producción
+Para desplegar en producción:
+- ✅ Usar variables de entorno para credenciales
+- ✅ Implementar JWT para autenticación
+- ✅ Usar HTTPS
+- ✅ Configurar CORS específico
+- ✅ Implementar hash de contraseñas (BCrypt)
 
 ---
 
 ## 🐛 Solución de Problemas
 
-### Error de Conexión a PostgreSQL
-```bash
-# Verificar que PostgreSQL esté ejecutándose
-sudo service postgresql status
+### Error: "Connection refused"
+- Verifica que PostgreSQL esté ejecutándose
+- Comprueba las credenciales en `application.properties`
 
-# Verificar puerto y configuración
-netstat -tulpn | grep 5433
-```
+### Error: "Table already exists"
+- Las tablas ya fueron creadas
+- Los datos se insertarán correctamente
 
-### Error de Puerto en Uso
-```bash
-# Cambiar puerto en application.properties
-server.port=8081
-```
-
-### Problemas de Dependencias Maven
-```bash
-# Limpiar cache y reinstalar dependencias
-mvn clean install -U
-```
+### Error: "Port 8080 already in use"
+- Detén otros servicios en el puerto 8080
+- O cambia el puerto en `application.properties`
 
 ---
 
-## 👨‍💻 Autor
+## 📧 Soporte
 
-**Rodrigo Vásquez de Velasco Gonzales Vigil**  
-Estudiante de Administración y Negocios Digitales – UTEC  
-Desarrollador Full Stack | Spring Boot – PostgreSQL – React  
-📧 rodrigo.vasquez@utec.edu.pe  
-🌐 github.com/Rodvdev
+Para más información o ayuda, contacta al equipo de desarrollo.
 
 ---
 
-## 🏁 Licencia
+## 📄 Licencia
 
-Este proyecto es de uso académico para el curso Diseño de Software – UTEC.
-
----
-
-## 📚 Referencias
-
-- [Spring Boot Documentation](https://spring.io/projects/spring-boot)
-- [PostgreSQL Documentation](https://www.postgresql.org/docs/)
-- [Axios Documentation](https://axios-http.com/docs/intro)
-- [Bruno API Client](https://www.usebruno.com/)
-- [Maven Documentation](https://maven.apache.org/guides/)
+Este proyecto es parte de un laboratorio académico.
 
 ---
 
-*Desarrollado con ❤️ para el Laboratorio N°05 de Diseño de Software - UTEC*
+**Desarrollado con ❤️ usando Spring Boot y PostgreSQL**

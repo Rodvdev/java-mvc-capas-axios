@@ -1,39 +1,72 @@
-CREATE TABLE productos (
-                           id BIGSERIAL PRIMARY KEY,
-                           nombre VARCHAR(100) NOT NULL,
-                           descripcion VARCHAR(500),
-                           cantidad INTEGER NOT NULL CHECK (cantidad >= 0),
-                           precio NUMERIC(10, 2) NOT NULL CHECK (precio > 0),
-                           CONSTRAINT productos_nombre_unique UNIQUE (nombre)
+-- ==========================
+-- CREACIÓN DE TABLAS
+-- ==========================
+
+-- Tabla de Departamentos
+CREATE TABLE IF NOT EXISTS departamentos (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    ubicacion VARCHAR(100),
+    presupuesto NUMERIC(12,2)
 );
 
--- Comentarios sobre la tabla y columnas
-COMMENT ON TABLE productos IS 'Tabla que almacena información de productos';
-COMMENT ON COLUMN productos.id IS 'Identificador único del producto (autogenerado)';
-COMMENT ON COLUMN productos.nombre IS 'Nombre del producto (máximo 100 caracteres)';
-COMMENT ON COLUMN productos.descripcion IS 'Descripción detallada del producto (máximo 500 caracteres)';
-COMMENT ON COLUMN productos.cantidad IS 'Cantidad disponible en inventario (no puede ser negativa)';
-COMMENT ON COLUMN productos.precio IS 'Precio del producto (debe ser mayor que 0)';
+CREATE TABLE IF NOT EXISTS usuarios(
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    login VARCHAR(20),
+    clave VARCHAR(20)
+);
 
--- 4. CREAR ÍNDICES para mejorar el rendimiento
-CREATE INDEX idx_productos_nombre ON productos(nombre);
-CREATE INDEX idx_productos_cantidad ON productos(cantidad);
-CREATE INDEX idx_productos_precio ON productos(precio);
+-- Tabla de Empleados
+CREATE TABLE IF NOT EXISTS empleados (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    email VARCHAR(150) UNIQUE NOT NULL,
+    telefono VARCHAR(20),
+    fecha_contratacion DATE NOT NULL,
+    salario NUMERIC(10,2) NOT NULL,
+    cargo VARCHAR(100),
+    departamento_id INT REFERENCES departamentos(id)
+);
 
--- 5. INSERTAR DATOS DE PRUEBA
-INSERT INTO productos (nombre, descripcion, cantidad, precio) VALUES
-                                                                  ('Laptop Dell XPS 15', 'Laptop de alto rendimiento con procesador Intel i7, 16GB RAM, 512GB SSD', 10, 1299.99),
-                                                                  ('Mouse Logitech MX Master 3', 'Mouse inalámbrico ergonómico con 7 botones programables', 25, 99.99),
-                                                                  ('Teclado Mecánico Corsair K95', 'Teclado mecánico RGB con switches Cherry MX', 15, 189.99),
-                                                                  ('Monitor Samsung 27" 4K', 'Monitor Ultra HD 4K de 27 pulgadas con HDR', 8, 449.99),
-                                                                  ('Webcam Logitech C920', 'Cámara web Full HD 1080p con micrófono estéreo', 30, 79.99),
-                                                                  ('Auriculares Sony WH-1000XM4', 'Auriculares inalámbricos con cancelación de ruido', 12, 349.99),
-                                                                  ('Disco Duro SSD Samsung 1TB', 'Unidad de estado sólido NVMe de 1TB', 20, 129.99),
-                                                                  ('Impresora HP LaserJet Pro', 'Impresora láser monocromática con Wi-Fi', 5, 249.99),
-                                                                  ('Router TP-Link AX6000', 'Router Wi-Fi 6 de doble banda con 8 antenas', 18, 299.99),
-                                                                  ('Hub USB-C Anker 7 en 1', 'Hub multipuerto con HDMI, USB 3.0 y lector de tarjetas', 40, 49.99);
+-- ==========================
+-- INSERCIÓN DE DATOS
+-- ==========================
 
--- 6. CONSULTAS ÚTILES PARA VERIFICAR
+-- Departamentos (4 registros)
+INSERT INTO departamentos (nombre, ubicacion, presupuesto) VALUES
+('Recursos Humanos', 'Lima', 150000.00),
+('Tecnología', 'Arequipa', 300000.00),
+('Marketing', 'Cusco', 200000.00),
+('Finanzas', 'Lima', 250000.00)
+ON CONFLICT DO NOTHING;
 
--- Ver todos los productos
-SELECT * FROM productos;
+-- Usuarios (2 registros)
+INSERT INTO usuarios (nombre, login, clave) VALUES
+('Jorge Curioso', 'jorge', '1234'),
+('Mac Pato', 'max', '1234')
+ON CONFLICT DO NOTHING;
+
+-- Empleados (20 registros de ejemplo)
+INSERT INTO empleados (nombre, apellido, email, telefono, fecha_contratacion, salario, cargo, departamento_id) VALUES
+('Ana', 'Pérez', 'ana.perez@empresa.com', '999111222', '2021-03-10', 3500.00, 'Analista RRHH', 1),
+('Luis', 'García', 'luis.garcia@empresa.com', '999111223', '2020-07-15', 5000.00, 'Desarrollador Senior', 2),
+('María', 'Lopez', 'maria.lopez@empresa.com', '999111224', '2019-02-01', 4200.00, 'Diseñadora UX', 2),
+('Carlos', 'Ramírez', 'carlos.ramirez@empresa.com', '999111225', '2022-05-20', 2800.00, 'Asistente Marketing', 3),
+('Lucía', 'Fernández', 'lucia.fernandez@empresa.com', '999111226', '2023-01-10', 3100.00, 'Ejecutiva de Ventas', 3),
+('Miguel', 'Torres', 'miguel.torres@empresa.com', '999111227', '2018-08-08', 6000.00, 'Jefe de Tecnología', 2),
+('Rosa', 'Castro', 'rosa.castro@empresa.com', '999111228', '2021-12-12', 2900.00, 'Asistente Administrativo', 1),
+('Jorge', 'Flores', 'jorge.flores@empresa.com', '999111229', '2020-11-30', 4800.00, 'Contador', 4),
+('Patricia', 'Mendoza', 'patricia.mendoza@empresa.com', '999111230', '2017-09-14', 7000.00, 'Gerente de Finanzas', 4),
+('Raúl', 'Díaz', 'raul.diaz@empresa.com', '999111231', '2022-06-18', 3200.00, 'Analista de Datos', 2),
+('Elena', 'Morales', 'elena.morales@empresa.com', '999111232', '2023-04-01', 2800.00, 'Community Manager', 3),
+('Diego', 'Reyes', 'diego.reyes@empresa.com', '999111233', '2019-07-22', 4500.00, 'Ingeniero de Software', 2),
+('Verónica', 'Soto', 'veronica.soto@empresa.com', '999111234', '2021-10-05', 3800.00, 'Especialista en Selección', 1),
+('Hugo', 'Rojas', 'hugo.rojas@empresa.com', '999111235', '2020-02-28', 5200.00, 'Arquitecto de Software', 2),
+('Claudia', 'Vega', 'claudia.vega@empresa.com', '999111236', '2022-09-09', 3400.00, 'Ejecutiva de Cuentas', 3),
+('Fernando', 'Cruz', 'fernando.cruz@empresa.com', '999111237', '2018-12-17', 6100.00, 'Gerente de TI', 2),
+('Andrea', 'Navarro', 'andrea.navarro@empresa.com', '999111238', '2021-06-25', 3600.00, 'Analista Financiero', 4),
+('Pablo', 'Guzmán', 'pablo.guzman@empresa.com', '999111239', '2020-08-13', 4700.00, 'Desarrollador Backend', 2),
+('Gabriela', 'Ortega', 'gabriela.ortega@empresa.com', '999111240', '2023-03-03', 3000.00, 'Asistente Contable', 4),
+('Sebastián', 'Ibarra', 'sebastian.ibarra@empresa.com', '999111241', '2019-11-11', 4200.00, 'Desarrollador Frontend', 2);
